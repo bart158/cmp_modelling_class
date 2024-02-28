@@ -22,6 +22,7 @@ for n in range(0, 10):
     sum_board += rolled_board
     rolled_board = np.roll(rolled_board, 1, axis = 0)
     sum_board += rolled_board
+    #still need to change the loops
     for i in range(1,255):
         for j in range(1, 511):
                 if board[i, j] == 0:
