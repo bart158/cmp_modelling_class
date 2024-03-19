@@ -1,5 +1,7 @@
 import numpy as np
 import random as rnd
+import numba
+from numba import jit
 from PIL import Image, ImageDraw
 
 class Ant:
@@ -9,7 +11,7 @@ class Ant:
         this.has_food = has_food
         this.turns_lost = turns_lost
         this.board = board
-        this.lost_lim = 100
+        this.lost_lim = 30
     
     #701
     #6x2
@@ -69,19 +71,19 @@ class Ant:
                     this.turns_lost = 0
                     return 1
                 facing_cells_pher[i] = this.board[facing_cells_pos[i, 0], facing_cells_pos[i, 1], 2]
-            facing_cells_pher[0] /= 2
-            facing_cells_pher[2] /= 2
+            #facing_cells_pher[0] /= 2
+            #facing_cells_pher[2] /= 2
             if(np.sum(facing_cells_pher)):
                 this.pos = (rnd.choices(population = (facing_cells_pos[0],facing_cells_pos[1],facing_cells_pos[2]), weights = facing_cells_pher.tolist()))[0]
-                if np.all([this.pos, facing_cells_pos[0]]):
+                if (this.pos[0] == facing_cells_pos[0,0] and this.pos[1] == facing_cells_pos[0,1]):
                     this.drc = (this.drc-1)%8
-                elif np.all([this.pos, facing_cells_pos[2]]):
+                elif (this.pos[0] == facing_cells_pos[2,0] and this.pos[1] == facing_cells_pos[2,1]):
                     this.drc = (this.drc+1)%8
             else:
-                this.pos = (rnd.choices(population = (facing_cells_pos[0],facing_cells_pos[1],facing_cells_pos[2]), weights = (1,2,1)))[0]
-                if np.all([this.pos, facing_cells_pos[0]]):
+                this.pos = (rnd.choices(population = (facing_cells_pos[0],facing_cells_pos[1],facing_cells_pos[2]), weights = (1,1,1)))[0]
+                if (this.pos[0] == facing_cells_pos[0,0] and this.pos[1] == facing_cells_pos[0,1]):
                     this.drc = (this.drc-1)%8
-                elif np.all([this.pos, facing_cells_pos[2]]):
+                elif (this.pos[0] == facing_cells_pos[2,0] and this.pos[1] == facing_cells_pos[2,1]):
                     this.drc = (this.drc+1)%8
         else:
             if this.turns_lost < this.lost_lim:
@@ -99,20 +101,20 @@ class Ant:
                 
             if(np.sum(facing_cells_pher)):
                 this.pos = (rnd.choices(population = (facing_cells_pos[0],facing_cells_pos[1],facing_cells_pos[2]), weights = facing_cells_pher.tolist()))[0]
-                if np.all([this.pos, facing_cells_pos[0]]):
+                if (this.pos[0] == facing_cells_pos[0,0] and this.pos[1] == facing_cells_pos[0,1]):
                     this.drc = (this.drc-1)%8
-                elif np.all([this.pos, facing_cells_pos[2]]):
+                elif (this.pos[0] == facing_cells_pos[2,0] and this.pos[1] == facing_cells_pos[2,1]):
                     this.drc = (this.drc+1)%8
             else:
-                this.pos = (rnd.choices(population = (facing_cells_pos[0],facing_cells_pos[1],facing_cells_pos[2]), weights = (1,2,1)))[0]
-                if np.all([this.pos, facing_cells_pos[0]]):
+                this.pos = (rnd.choices(population = (facing_cells_pos[0],facing_cells_pos[1],facing_cells_pos[2]), weights = (1,1,1)))[0]
+                if (this.pos[0] == facing_cells_pos[0,0] and this.pos[1] == facing_cells_pos[0,1]):
                     this.drc = (this.drc-1)%8
-                elif np.all([this.pos, facing_cells_pos[2]]):
+                elif (this.pos[0] == facing_cells_pos[2,0] and this.pos[1] == facing_cells_pos[2,1]):
                     this.drc = (this.drc+1)%8
                 '''print(type(this.pos))
                 print(type(this.pos[0]))
                 print(facing_cells_pos[0])'''
-        print(this.has_food)
+        #print(this.has_food)
         return 0
 
 def print_frame(i, sizeN, board, ants):
@@ -156,19 +158,19 @@ for i in range(5,75):
 
 #----------------------
 # ant initialization
-nAnts = 1
+nAnts = 80
 ants = np.empty((nAnts), dtype = Ant)
 for i in range(0, nAnts):
     ants[i] = Ant(np.array((np.random.randint(nest_lim[0],nest_lim[1]), np.random.randint(nest_lim[0],nest_lim[1]))), np.random.randint(0, 8), board)
 
 food_count = 0
 print("Simulating the ant colony...")
-for i in range(0, 1000):
+for i in range(0, 5000):
     for a in ants:
         food_count += a.move()
     board[:, :, 1] *= 0.99
     board[:, :, 2] *= 0.99
-    print(i)
+    #print(i)
     print_frame(i, sizeN, board, ants)
 print("Simulation finished!")
 print("Collected food: ")
