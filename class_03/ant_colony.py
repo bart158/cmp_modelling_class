@@ -12,6 +12,7 @@ class Ant:
         this.turns_lost = turns_lost
         this.board = board
         this.lost_lim = 30
+
     
     #701
     #6x2
@@ -59,6 +60,8 @@ class Ant:
         facing_cells_pher = np.zeros((3))
         size = len(this.board)
         facing_cells_pos = this.get_facing()
+        h= 2
+        alpha = 5
 
         if this.has_food:
             if this.turns_lost < this.lost_lim:
@@ -70,7 +73,7 @@ class Ant:
                     this.drc = (this.drc+4)%8
                     this.turns_lost = 0
                     return 1
-                facing_cells_pher[i] = this.board[facing_cells_pos[i, 0], facing_cells_pos[i, 1], 2]
+                facing_cells_pher[i] = (h + this.board[facing_cells_pos[i, 0], facing_cells_pos[i, 1], 2])**alpha
             #facing_cells_pher[0] /= 2
             #facing_cells_pher[2] /= 2
             if(np.sum(facing_cells_pher)):
