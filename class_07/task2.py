@@ -32,6 +32,20 @@ def getPayoffs(phif, payoff):
     PDD = np.abs(phif[3])**2
     return (payoff[0, 0, 0] * PCC + payoff[0, 1, 0] * PCD + payoff[1, 0, 0] * PDC + payoff[1, 1, 0] * PDD, payoff[0, 0, 1] * PCC + payoff[0, 1, 1] * PCD + payoff[1, 0, 1] * PDC + payoff[1, 1, 1] * PDD)
 
+
+def payoff_A(angles, *args):
+    gamma, payoff = args
+    theta, phi = angles
+    phif1 = playPD(gamma, opU(theta, phi), opU(0, 0))
+    phif2 = playPD(gamma, opU(theta, phi), opU(np.pi, 0))
+    m1 = getPayoffs(phif1, payoff)[0]
+    m2 = getPayoffs(phif2, payoff)[0]
+    if  m1 < m2:
+        return -m1
+    else:
+        return -m2
+
+
 opC = opU(0, 0)
 opD = opU(np.pi, 0)
 opQ = np.array(((1j,0),(0,-1j)))
@@ -91,3 +105,16 @@ plt.xlabel("theta")
 plt.ylabel("payoff")
 plt.legend()
 plt.savefig("task2b.png")
+
+plt.clf()
+m_res = []
+for g in gamma:
+    result = scp.optimize.differential_evolution(payoff_A, args = (g, payoff), bounds = [(0, np.pi), (0, np.pi/2)])
+    m_res.append(-payoff_A(result.x, g, payoff))
+
+plt.plot(gamma, m_res)
+plt.title("Maximized m($\gamma$)")
+plt.ylabel("max(m)")
+plt.xlabel("$\gamma$")
+
+plt.savefig("task2c.png")
