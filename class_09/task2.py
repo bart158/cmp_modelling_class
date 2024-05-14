@@ -39,6 +39,45 @@ def do_avalanche(h_loc, s, H, aval, aval_count):
     return np.sum(s)
 
 L = 300
+R = 1.4
+H = -3
+h_rnd = np.random.randn(L, L) * R
+h_loc = np.ones((L, L)) * -4 + h_rnd
+s = np.ones((L, L), dtype=int) * -1
+aval = np.zeros((L, L), dtype=int)
+aval_count = 0
+
+hval1 = [H]
+mval1 = [np.sum(s)/(L*L)]
+
+while H <= 3:
+    aval_count += 1
+    do_avalanche(h_loc, s, H, aval, aval_count)
+    hval1.append(H)
+    mval1.append(np.sum(s)/(L*L))
+    H += 0.1
+
+L = 300
+R = 0.9
+H = -3
+h_rnd = np.random.randn(L, L) * R
+h_loc = np.ones((L, L)) * -4 + h_rnd
+s = np.ones((L, L), dtype=int) * -1
+aval = np.zeros((L, L), dtype=int)
+aval_count = 0
+
+hval2 = [H]
+mval2 = [np.sum(s)/(L*L)]
+
+while H <= 3:
+    aval_count += 1
+    do_avalanche(h_loc, s, H, aval, aval_count)
+    hval2.append(H)
+    mval2.append(np.sum(s)/(L*L))
+    H += 0.1
+
+
+L = 300
 R = 2.1
 H = -3
 h_rnd = np.random.randn(L, L) * R
@@ -47,21 +86,19 @@ s = np.ones((L, L), dtype=int) * -1
 aval = np.zeros((L, L), dtype=int)
 aval_count = 0
 
-hval = [H]
-mval = [np.sum(s)/(L*L)]
+hval3 = [H]
+mval3 = [np.sum(s)/(L*L)]
 
 while H <= 3:
     aval_count += 1
     do_avalanche(h_loc, s, H, aval, aval_count)
-    hval.append(H)
-    mval.append(np.sum(s)/(L*L))
+    hval3.append(H)
+    mval3.append(np.sum(s)/(L*L))
     H += 0.1
 
-
-plt.imshow(aval,interpolation='none',cmap="gist_rainbow")
-plt.savefig("task2a.png")
-plt.clf()
-plt.plot(mval, hval)
-plt.xlabel("M")
-plt.ylabel("H")
-plt.savefig("histeresis_r21.png")
+plt.plot(hval1, mval1)
+plt.plot(hval2, mval2)
+plt.plot(hval3, mval3)
+plt.xlabel("H")
+plt.ylabel("M")
+plt.savefig("histeresis_all.png")
