@@ -45,7 +45,7 @@ def plot_state(chain, i):
     plt.close()
 
 
-N = 100
+N = 1000
 
 chain = np.random.randint(0,2,(N))*2 - 1
 edges = np.linspace(0, N, N+1, endpoint=True)
@@ -54,15 +54,15 @@ m = []
 time_arr_numpy = np.zeros((N, 1), dtype= int)
 time_arr = time_arr_numpy.tolist()
 
-for i in range(0, 1000):
-    plot_state(chain, i)
+for i in range(0, 100000):
+    #plot_state(chain, i)
     x.append(i)
     chain_copy = np.copy(chain)
     chain = MCstep(chain)
     m.append(getMag(chain))
     check_if_changed(chain, chain_copy, time_arr, i)
     
-plot_state(chain, 1000)
+#plot_state(chain, 1000)
 plt.plot(x,m)
 plt.title('Magnetization')
 plt.ylabel('m')
@@ -77,6 +77,7 @@ n, bins, patches = plt.hist(tau, 50)
 plt.cla()
 taux = bins + (bins[1]-bins[0])/2
 taux = taux[0:-1]
+np.savetxt('tau_plot.txt', np.array([taux, n]))
 plt.scatter(taux, n)
 plt.xscale('log')
 plt.yscale('log')
