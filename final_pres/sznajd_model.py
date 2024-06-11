@@ -19,8 +19,8 @@ def MCstep(chain):
     return chain
 
 def random_flip(chain, p):
-    flip_prob = np.ranom.random(len(chain))
-    if_to_flip = np.where(flip_prob <= p, -1, 0)
+    flip_prob = np.random.random(len(chain))
+    if_to_flip = np.where(flip_prob <= p, -1, 1)
     chain = chain * if_to_flip
 
 def getMag(chain):
@@ -46,8 +46,9 @@ def plot_state(chain, i):
 
 
 N = 1000
-
-chain = np.random.randint(0,2,(N))*2 - 1
+prob = 0.2
+#chain = np.random.randint(0,2,(N))*2 - 1
+chain = np.ones((N))
 edges = np.linspace(0, N, N+1, endpoint=True)
 x = []
 m = []
@@ -59,6 +60,7 @@ for i in range(0, 100000):
     x.append(i)
     chain_copy = np.copy(chain)
     chain = MCstep(chain)
+    random_flip(chain, prob)
     m.append(getMag(chain))
     check_if_changed(chain, chain_copy, time_arr, i)
     
